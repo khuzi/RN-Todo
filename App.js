@@ -4,14 +4,9 @@ import "react-native-get-random-values";
 import { v4 as uuid } from "uuid";
 
 import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
+import { StyleSheet, Text, View, FlatList } from "react-native";
+
+import { GoalItem, GoalInput } from "./components";
 
 export default function App() {
   const [newGoal, setNewGoal] = useState();
@@ -48,20 +43,12 @@ export default function App() {
       >
         TODO APPLICATION
       </Text>
-      <View style={styles.menu}>
-        <TextInput
-          value={newGoal}
-          placeholder="Enter Goal"
-          style={styles.goalText}
-          onChangeText={newGoalHandler}
-        />
-        <TouchableOpacity onPress={allGoalsHandler}>
-          <View style={styles.goalBtn}>
-            <Text style={styles.btnText}>+</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
 
+      <GoalInput
+        newGoal={newGoal}
+        newGoalHandler={newGoalHandler}
+        allGoalsHandler={allGoalsHandler}
+      />
       {allGoals.length > 0 && (
         <View style={styles.goalsBox}>
           <Text
@@ -77,11 +64,11 @@ export default function App() {
           <FlatList
             data={allGoals}
             renderItem={(itemData) => (
-              <TouchableOpacity onPress={() => removeGoal(itemData.item.key)}>
-                <View style={styles.goalItem}>
-                  <Text style={styles.goalItemText}>{itemData.item.value}</Text>
-                </View>
-              </TouchableOpacity>
+              <GoalItem
+                title={itemData.item.value}
+                key={itemData.item.key}
+                onRemoveGoal={removeGoal}
+              />
             )}
           />
         </View>
@@ -128,14 +115,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "black",
     borderRadius: 5,
-  },
-  goalItem: {
-    padding: 10,
-    backgroundColor: "#eee",
-    marginVertical: 10,
-  },
-  goalItemText: {
-    textAlign: "center",
-    fontSize: 20,
   },
 });
