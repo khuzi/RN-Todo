@@ -1,9 +1,9 @@
 import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 
-export function GoalItem({ title, key, onRemoveGoal }) {
+export function GoalItem({ title, onRemoveGoal }) {
   return (
-    <TouchableOpacity onPress={() => onRemoveGoal(key)}>
+    <TouchableOpacity onPress={onRemoveGoal}>
       <View style={styles.goalItem}>
         <Text style={styles.goalItemText}>{title}</Text>
       </View>

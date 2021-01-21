@@ -4,25 +4,28 @@ import "react-native-get-random-values";
 import { v4 as uuid } from "uuid";
 
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  Button,
+  TouchableOpacity,
+} from "react-native";
 
 import { GoalItem, GoalInput } from "./components";
 
 export default function App() {
-  const [newGoal, setNewGoal] = useState();
   const [allGoals, setAllGoals] = useState([]);
+  const [isAddModal, setIsAddModal] = useState(false);
 
-  const newGoalHandler = (goal) => {
-    setNewGoal(goal);
-  };
-
-  const allGoalsHandler = () => {
+  const allGoalsHandler = (newGoal, setNewGoal) => {
     if (newGoal) {
       setAllGoals((prevGoals) => [
         ...prevGoals,
         { key: uuid(), value: newGoal },
       ]);
-      setNewGoal(null);
+      setIsAddModal(false);
     }
   };
 
@@ -43,11 +46,11 @@ export default function App() {
       >
         TODO APPLICATION
       </Text>
-
+      <Button title="Add New Goal" onPress={() => setIsAddModal(true)} />
       <GoalInput
-        newGoal={newGoal}
-        newGoalHandler={newGoalHandler}
         allGoalsHandler={allGoalsHandler}
+        visible={isAddModal}
+        onCancel={setIsAddModal}
       />
       {allGoals.length > 0 && (
         <View style={styles.goalsBox}>
@@ -66,14 +69,12 @@ export default function App() {
             renderItem={(itemData) => (
               <GoalItem
                 title={itemData.item.value}
-                key={itemData.item.key}
-                onRemoveGoal={removeGoal}
+                onRemoveGoal={() => removeGoal(itemData.item.key)}
               />
             )}
           />
         </View>
       )}
-
       <StatusBar style="auto" />
     </View>
   );
