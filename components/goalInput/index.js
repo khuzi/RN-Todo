@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   TextInput,
@@ -9,16 +9,14 @@ import {
   Button,
 } from "react-native";
 
-export function GoalInput({ allGoalsHandler, visible, onCancel }) {
+import { GoalContext } from "../../context/context";
+
+export function GoalInput() {
+  const { state, dispatch } = useContext(GoalContext);
   const [newGoal, setNewGoal] = useState();
 
-  const goalHandler = () => {
-    allGoalsHandler(newGoal);
-    setNewGoal("");
-  };
-
   return (
-    <Modal visible={visible} animationType="slide">
+    <Modal visible={state.isModal} animationType="slide">
       <View style={styles.root}>
         <View style={styles.menu}>
           <TextInput
@@ -26,8 +24,11 @@ export function GoalInput({ allGoalsHandler, visible, onCancel }) {
             placeholder="Enter Goal"
             style={styles.goalText}
             onChangeText={setNewGoal}
+            autoFocus
           />
-          <TouchableOpacity onPress={goalHandler}>
+          <TouchableOpacity
+            onPress={() => dispatch({ type: "ADD_GOAL", goal: newGoal })}
+          >
             <View style={styles.goalBtn}>
               <Text style={styles.btnText}>+</Text>
             </View>
@@ -38,7 +39,7 @@ export function GoalInput({ allGoalsHandler, visible, onCancel }) {
           <Button
             title="Cancel"
             color="coral"
-            onPress={() => onCancel(false)}
+            onPress={() => dispatch({ type: "MODAL_CLOSE" })}
           />
         </View>
       </View>

@@ -1,7 +1,4 @@
-import React, { useState } from "react";
-
-import "react-native-get-random-values";
-import { v4 as uuid } from "uuid";
+import React, { useContext } from "react";
 
 import { StatusBar } from "expo-status-bar";
 import {
@@ -15,68 +12,60 @@ import {
 
 import { GoalItem, GoalInput } from "./components";
 
+import GoalContextWarper from "./context/globalState";
+import { GoalContext } from "./context/context";
+import { REMOVE_GOAL, MODAL_OPEN } from "./context/actions";
+
 export default function App() {
-  const [allGoals, setAllGoals] = useState([]);
-  const [isAddModal, setIsAddModal] = useState(false);
-
-  const allGoalsHandler = (newGoal, setNewGoal) => {
-    if (newGoal) {
-      setAllGoals((prevGoals) => [
-        ...prevGoals,
-        { key: uuid(), value: newGoal },
-      ]);
-      setIsAddModal(false);
-    }
-  };
-
-  const removeGoal = (key) => {
-    const updatedGoals = allGoals.filter((goal) => goal.key !== key);
-    setAllGoals(updatedGoals);
-  };
+  const { state, dispatch } = useContext(GoalContext);
 
   return (
-    <View style={styles.root}>
-      <Text
-        style={{
-          marginBottom: 10,
-          fontSize: 30,
-          textAlign: "center",
-          fontWeight: "bold",
-        }}
-      >
-        TODO APPLICATION
-      </Text>
-      <Button title="Add New Goal" onPress={() => setIsAddModal(true)} />
-      <GoalInput
-        allGoalsHandler={allGoalsHandler}
-        visible={isAddModal}
-        onCancel={setIsAddModal}
-      />
-      {allGoals.length > 0 && (
-        <View style={styles.goalsBox}>
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 25,
-              marginVertical: 5,
-              textTransform: "uppercase",
-            }}
-          >
-            All Goals
-          </Text>
-          <FlatList
-            data={allGoals}
-            renderItem={(itemData) => (
-              <GoalItem
-                title={itemData.item.value}
-                onRemoveGoal={() => removeGoal(itemData.item.key)}
-              />
-            )}
-          />
-        </View>
-      )}
-      <StatusBar style="auto" />
-    </View>
+    <GoalContextWarper>
+      <View style={styles.root}>
+        <Text
+          style={{
+            marginBottom: 10,
+            fontSize: 30,
+            textAlign: "center",
+            fontWeight: "bold",
+          }}
+        >
+          TODO APPLICATION
+        </Text>
+        <Button
+          title="Add New Goal"
+          onPress={() => dispatch({ type: MODAL_OPEN })}
+        />
+        <GoalInput />
+        {state.goals.length > 0 && (
+          <View style={styles.goalsBox}>
+            <Text
+              style={{
+                textAlign: "center",
+                fontSize: 25,
+                marginVertical: 5,
+                textTransform: "uppercase",
+              }}
+            >
+              All Goals
+            </Text>
+            <FlatList
+              keyExtractor={(item, index) => item.id}
+              data={state.goals}
+              renderItem={(itemData) => (
+                <GoalItem
+                  onRemoveGoal={() =>
+                    dispatch({ type: REMOVE_GOAL, id: itemData.item.id })
+                  }
+                  title={itemData.item.value}
+                />
+              )}
+            />
+          </View>
+        )}
+        <StatusBar style="auto" />
+      </View>
+    </GoalContextWarper>
   );
 }
 
