@@ -23,7 +23,7 @@ export const goalReducer = (state, action) => {
     case MODAL_OPEN:
       return { ...state, isModal: true };
     case MODAL_CLOSE:
-      return { ...state, isModal: true };
+      return { ...state, isModal: false };
     default:
       return state;
   }

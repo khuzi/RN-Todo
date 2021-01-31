@@ -1,6 +1,6 @@
 import { createContext } from "react";
 
-export const GoalContext = createContext({
+export default createContext({
   goals: [],
   isModal: false,
 });

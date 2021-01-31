@@ -9,11 +9,16 @@ import {
   Button,
 } from "react-native";
 
-import { GoalContext } from "../../context/context";
+import GoalContext from "../../context/context";
 
 export function GoalInput() {
   const { state, dispatch } = useContext(GoalContext);
   const [newGoal, setNewGoal] = useState();
+
+  const onAddGoalHandler = () => {
+    dispatch({ type: "ADD_GOAL", goal: newGoal });
+    setNewGoal("");
+  };
 
   return (
     <Modal visible={state.isModal} animationType="slide">
@@ -26,9 +31,7 @@ export function GoalInput() {
             onChangeText={setNewGoal}
             autoFocus
           />
-          <TouchableOpacity
-            onPress={() => dispatch({ type: "ADD_GOAL", goal: newGoal })}
-          >
+          <TouchableOpacity onPress={onAddGoalHandler}>
             <View style={styles.goalBtn}>
               <Text style={styles.btnText}>+</Text>
             </View>
@@ -38,7 +41,7 @@ export function GoalInput() {
         <View style={styles.cancelBtn}>
           <Button
             title="Cancel"
-            color="coral"
+            color="#C0222C"
             onPress={() => dispatch({ type: "MODAL_CLOSE" })}
           />
         </View>
@@ -63,7 +66,8 @@ const styles = StyleSheet.create({
     borderColor: "#000",
     width: "80%",
     borderRadius: 25,
-    padding: 8,
+    paddingVertical: 8,
+    paddingLeft: 15,
   },
   goalBtn: {
     backgroundColor: "#000",
@@ -81,5 +85,6 @@ const styles = StyleSheet.create({
   cancelBtn: {
     justifyContent: "center",
     marginTop: 15,
+    width: 100,
   },
 });

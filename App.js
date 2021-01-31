@@ -1,26 +1,15 @@
-import React, { useContext } from "react";
+import React from "react";
 
 import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  Button,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
-import { GoalItem, GoalInput } from "./components";
+import { GoalInput, AddGoal, AllGoals } from "./components";
 
-import GoalContextWarper from "./context/globalState";
-import { GoalContext } from "./context/context";
-import { REMOVE_GOAL, MODAL_OPEN } from "./context/actions";
+import GlobalState from "./context/globalState";
 
 export default function App() {
-  const { state, dispatch } = useContext(GoalContext);
-
   return (
-    <GoalContextWarper>
+    <GlobalState>
       <View style={styles.root}>
         <Text
           style={{
@@ -32,40 +21,12 @@ export default function App() {
         >
           TODO APPLICATION
         </Text>
-        <Button
-          title="Add New Goal"
-          onPress={() => dispatch({ type: MODAL_OPEN })}
-        />
+        <AddGoal />
         <GoalInput />
-        {state.goals.length > 0 && (
-          <View style={styles.goalsBox}>
-            <Text
-              style={{
-                textAlign: "center",
-                fontSize: 25,
-                marginVertical: 5,
-                textTransform: "uppercase",
-              }}
-            >
-              All Goals
-            </Text>
-            <FlatList
-              keyExtractor={(item, index) => item.id}
-              data={state.goals}
-              renderItem={(itemData) => (
-                <GoalItem
-                  onRemoveGoal={() =>
-                    dispatch({ type: REMOVE_GOAL, id: itemData.item.id })
-                  }
-                  title={itemData.item.value}
-                />
-              )}
-            />
-          </View>
-        )}
+        <AllGoals />
         <StatusBar style="auto" />
       </View>
-    </GoalContextWarper>
+    </GlobalState>
   );
 }
 

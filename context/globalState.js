@@ -1,6 +1,6 @@
-import { useContext, useReducer } from "react";
+import React, { useContext, useReducer } from "react";
 
-import { GoalContext } from "./context";
+import GoalContext from "./context";
 import { goalReducer } from "./reducer";
 
 const GoalContextProvider = ({ children }) => {
